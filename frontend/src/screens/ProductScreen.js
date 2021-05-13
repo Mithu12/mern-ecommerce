@@ -4,11 +4,14 @@ import {Row, Col, Image, ListGroup, Card, Button, Form} from "react-bootstrap";
 import Rating from "../components/Rating";
 import {useDispatch, useSelector} from "react-redux";
 import {getProductDetails} from "../Redux/Product/productActions";
-import Loader from "../components/loader";
-import Message from "../components/message";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
+import {addToCart} from "../Redux/Cart/cartActions";
 
-const ProductScreen = ({history, match}) => {
-    const [quantity, setQuantity] = useState(0);
+const ProductScreen = ({ match}) => {
+    const [quantity, setQuantity] = useState(1);
+    const [viewMessage, setViewMessage] = useState(false);
+
 
     const dispatch = useDispatch()
 
@@ -19,13 +22,19 @@ const ProductScreen = ({history, match}) => {
         dispatch(getProductDetails(match.params.id))
     }, [match, dispatch]);
 
-    const addToCartHandler = () => {
-        history.push(`/cart/${match.params.id}?quantity=${quantity}`)
+    useEffect(()=> {
+        setTimeout(() => setViewMessage(false), 2000);
+    },[viewMessage])
+
+    const addToCartHandler = async () => {
+        await dispatch(addToCart(match.params.id, quantity))
+        setViewMessage(true)
     }
 
     return (
         <div>
             <Link className={'btn btn-light my-3'} to="/">Go back</Link>
+            {viewMessage && <Message variant={'success'}>Product Added Successfully</Message>}
             {
                 loading ? <Loader/>
                 : error ? <Message variant={'danger'}/> :
@@ -85,10 +94,10 @@ const ProductScreen = ({history, match}) => {
                                                         <Form.Control
                                                             as={'select'}
                                                             value={quantity}
-                                                            onChange={(e)=>setQuantity(e.target.value)}
+                                                            onChange={(e)=>setQuantity(Number(e.target.value))}
                                                         >
                                                             {
-                                                                [...Array(Number(5)).keys()]
+                                                                [...Array(product.stock).keys()]
                                                                     .map(x => (
                                                                         <option value={x+1} key={x+1}>
                                                                             {x+1}
