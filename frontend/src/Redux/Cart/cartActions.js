@@ -1,5 +1,5 @@
 import axios from "axios";
-import {CART_ADD_ITEM, CART_REMOVE_ITEM, CART_CHANGE_ITEM_QUANTITY, CART_DECREASE_ITEM_QUANTITY} from "./cartConstants";
+import {CART_ADD_ITEM, CART_REMOVE_ITEM, CART_CHANGE_ITEM_QUANTITY} from "./cartConstants";
 import cartCollections from './cartCollections'
 
 
