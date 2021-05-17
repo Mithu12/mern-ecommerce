@@ -5,7 +5,12 @@ import {
     USER_LOGOUT_SUCCESS,
     USER_SIGNUP_REQUEST,
     USER_SIGNUP_SUCCESS,
-    USER_SIGNUP_FAIL
+    USER_SIGNUP_FAIL,
+    USER_PROFILE_REQUEST,
+    USER_PROFILE_SUCCESS,
+    USER_PROFILE_FAIL,
+    USER_PROFILE_UPDATE_REQUEST,
+    USER_PROFILE_UPDATE_SUCCESS, USER_PROFILE_UPDATE_FAIL
 
 } from './userConstants'
 import axios from "axios";
@@ -69,6 +74,86 @@ export const register = (name, email, password) => async (dispatch) =>{
     }catch (e) {
         dispatch({
             type: USER_SIGNUP_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
+
+
+
+export const profile = () => async (dispatch, getState) =>{
+    try{
+        dispatch({type: USER_PROFILE_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const {data} = await axios.get('api/users/profile', config)
+
+        dispatch({
+            type: USER_PROFILE_SUCCESS,
+            payload: data
+        })
+
+
+    }catch (e) {
+        dispatch({
+            type: USER_PROFILE_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
+
+export const update = (name, password, email) => async (dispatch, getState) =>{
+    try{
+        dispatch({type: USER_PROFILE_UPDATE_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const {data} = await axios.put('api/users/profile', {
+            name, email, password
+        },config)
+
+        dispatch({
+            type: USER_PROFILE_UPDATE_SUCCESS,
+            payload: data
+        })
+
+        //================================ change saved login information
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('UserInfo', JSON.stringify(data))
+
+
+    }catch (e) {
+        dispatch({
+            type: USER_PROFILE_UPDATE_FAIL,
             payload: e.response && e.response.data.message
                 ? e.response.data.message
                 : e.message
