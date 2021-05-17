@@ -10,10 +10,11 @@ const CartScreen = () => {
     const dispatch = useDispatch()
     const {cartItems} = useSelector(state => state.cart)
 
+    const {userInfo} = useSelector(state => state.user)
 
-    const checkOutHandler = () => {
 
-    }
+
+
     return (
         <Row>
             <Col md={8}>
@@ -75,14 +76,16 @@ const CartScreen = () => {
                         }
                         </ListGroup.Item>
                         <ListGroup.Item>
-                            <Button
-                                type='button'
-                                className='btn-block'
-                                disabled={cartItems.length===0}
-                                onClick={checkOutHandler}
-                            >
-                                Proceed to Checkout
-                            </Button>
+                            <Link to={userInfo ? '/shipping' : '/login?re=shipping'}>
+                                <Button
+                                    type='button'
+                                    className='btn-block'
+                                    disabled={cartItems.length===0}
+                                >
+                                    Proceed to Checkout
+                                </Button>
+                            </Link>
+
                         </ListGroup.Item>
                     </ListGroup>
                 </Card>
