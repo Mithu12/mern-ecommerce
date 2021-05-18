@@ -9,11 +9,14 @@ import {
     USER_PROFILE_REQUEST,
     USER_PROFILE_SUCCESS,
     USER_PROFILE_FAIL,
+    USER_PROFILE_RESET,
     USER_PROFILE_UPDATE_REQUEST,
     USER_PROFILE_UPDATE_SUCCESS, USER_PROFILE_UPDATE_FAIL
 
 } from './userConstants'
 import axios from "axios";
+import {ORDER_LIST_RESET, SINGLE_ORDER_DETAILS_RESET} from "../Order/orderConstants";
+import {RESET_SHIPPING_ADDRESS} from "../Cart/cartConstants";
 
 export const login = (email, password) => async (dispatch) => {
     try{
@@ -48,6 +51,12 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => async (dispatch) =>{
     localStorage.removeItem('UserInfo')
     dispatch({type: USER_LOGOUT_SUCCESS})
+    dispatch({type: SINGLE_ORDER_DETAILS_RESET})
+    dispatch({type: ORDER_LIST_RESET})
+    dispatch({type: USER_PROFILE_RESET})
+    dispatch({type: RESET_SHIPPING_ADDRESS})
+    localStorage.removeItem('shippingAddress')
+    localStorage.removeItem('paymentMethod')
 }
 
 

@@ -5,7 +5,12 @@ import {
     USER_LOGOUT_SUCCESS,
     USER_SIGNUP_REQUEST,
     USER_SIGNUP_SUCCESS,
-    USER_SIGNUP_FAIL, USER_PROFILE_REQUEST, USER_PROFILE_SUCCESS, USER_PROFILE_FAIL, USER_PROFILE_UPDATE_SUCCESS
+    USER_SIGNUP_FAIL,
+    USER_PROFILE_REQUEST,
+    USER_PROFILE_SUCCESS,
+    USER_PROFILE_FAIL,
+    USER_PROFILE_UPDATE_SUCCESS,
+    USER_PROFILE_RESET
 
 } from './userConstants'
 
@@ -67,6 +72,10 @@ export const userDetailsReducer = (state={success:false}, action) => {
                 loading: false,
                 details: action.payload,
                 success: true,
+            }
+        case USER_PROFILE_RESET:
+            return {
+
             }
         default:
             return state

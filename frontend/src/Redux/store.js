@@ -4,6 +4,7 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import { productListReducer, productDetailsReducer } from "./Product/productReducers";
 import {cartReducer} from "./Cart/cartReducer";
 import {userDetailsReducer, userLoginReducer} from './User/userReducer'
+import {orderDetailsReducer, orderListReducer, orderPlaceReducer} from "./Order/orderReducer";
 
 
 const reducer = combineReducers({
@@ -11,7 +12,10 @@ const reducer = combineReducers({
     productDetails: productDetailsReducer,
     cart: cartReducer,
     user: userLoginReducer,
-    userDetails: userDetailsReducer
+    userDetails: userDetailsReducer,
+    placedOrder: orderPlaceReducer,
+    singleOrder: orderDetailsReducer,
+    orderList: orderListReducer
 })
 
 const cartItemsFromLocal = localStorage.getItem('cartItems') ?
@@ -22,6 +26,10 @@ const shippingAddressFromLocal = localStorage.getItem('shippingAddress') ?
     JSON.parse(localStorage.getItem('shippingAddress')) : {}
 
 
+const paymentMethodFromLocal = localStorage.getItem('paymentMethod') ?
+    JSON.parse(localStorage.getItem('paymentMethod')) : {}
+
+
 const userInfoFromLocal = localStorage.getItem('UserInfo') ?
     JSON.parse(localStorage.getItem('UserInfo')) : null
 
@@ -29,7 +37,8 @@ const userInfoFromLocal = localStorage.getItem('UserInfo') ?
 const initialState = {
     cart: {
         cartItems: cartItemsFromLocal,
-        shippingAddress: shippingAddressFromLocal
+        shippingAddress: shippingAddressFromLocal,
+        paymentMethod: paymentMethodFromLocal
     },
     user: {userInfo: userInfoFromLocal}
 }

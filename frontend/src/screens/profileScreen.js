@@ -2,9 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import {Form, Button, Row, Col} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
+import {profile, update} from "../Redux/User/userActions";
+
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import {profile, update} from "../Redux/User/userActions";
+import OrderList from "../components/OrderList";
 
 const ProfileScreen = ({location, history}) => {
     const initState = ''
@@ -94,6 +96,9 @@ const ProfileScreen = ({location, history}) => {
                         </Button>
                     </Form>
                 </Col>
+
+                <OrderList/>
+
 
             </Row>
         </>

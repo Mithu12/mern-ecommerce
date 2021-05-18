@@ -4,11 +4,18 @@ import {LinkContainer} from 'react-router-bootstrap'
 import {useDispatch, useSelector} from "react-redux";
 
 import {logout} from "../Redux/User/userActions";
+import {useHistory} from "react-router";
 
 const Header = () => {
+    const history = useHistory()
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const {loading, error, userInfo} = user
+
+    const Logout = () => {
+        dispatch(logout())
+        history.push('/login')
+    }
 
     return <header>
         <Navbar bg="dark" variant={"dark"} expand="lg" collapseOnSelect>
@@ -31,7 +38,7 @@ const Header = () => {
                                             Profile
                                         </NavDropdown.Item>
                                     </LinkContainer>
-                                        <NavDropdown.Item onClick={() => dispatch(logout())}>
+                                        <NavDropdown.Item onClick={() => dispatch(Logout)}>
                                             Logout
                                         </NavDropdown.Item>
                                 </NavDropdown>
