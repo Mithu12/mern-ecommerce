@@ -7,6 +7,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 import { saveShippingAddress } from "../Redux/Cart/cartActions";
+import CheckOutSteps from "../components/CheckOutSteps";
 
 
 const ShippingScreen = ({history,}) => {
@@ -27,6 +28,7 @@ const ShippingScreen = ({history,}) => {
 
     return (
         <FormContainer>
+            <CheckOutSteps step1 step2 />
             <h1>shipping</h1>
             <Form onSubmit={submitHandler}>
 
