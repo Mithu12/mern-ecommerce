@@ -11,7 +11,12 @@ import {
     USER_PROFILE_FAIL,
     USER_PROFILE_RESET,
     USER_PROFILE_UPDATE_REQUEST,
-    USER_PROFILE_UPDATE_SUCCESS, USER_PROFILE_UPDATE_FAIL
+    USER_PROFILE_UPDATE_SUCCESS,
+    USER_PROFILE_UPDATE_FAIL,
+    USER_LIST_FAIL,
+    USER_LIST_SUCCESS,
+    USER_LIST_REQUEST,
+    USER_LIST_RESET
 
 } from './userConstants'
 import axios from "axios";
@@ -28,7 +33,7 @@ export const login = (email, password) => async (dispatch) => {
             }
         }
 
-        const {data} = await axios.post('api/users/login', {email,password}, config)
+        const {data} = await axios.post('/api/users/login', {email,password}, config)
 
         dispatch({
             type: USER_LOGIN_SUCCESS,
@@ -55,6 +60,8 @@ export const logout = () => async (dispatch) =>{
     dispatch({type: ORDER_LIST_RESET})
     dispatch({type: USER_PROFILE_RESET})
     dispatch({type: RESET_SHIPPING_ADDRESS})
+    dispatch({type: RESET_SHIPPING_ADDRESS})
+    dispatch({type: USER_LIST_RESET})
     localStorage.removeItem('shippingAddress')
     localStorage.removeItem('paymentMethod')
 }
@@ -71,7 +78,7 @@ export const register = (name, email, password) => async (dispatch) =>{
             }
         }
 
-        const {data} = await axios.post('api/users', {name, email,password}, config)
+        const {data} = await axios.post('/api/users', {name, email,password}, config)
 
         dispatch({
             type: USER_SIGNUP_SUCCESS,
@@ -108,7 +115,7 @@ export const profile = () => async (dispatch, getState) =>{
             }
         }
 
-        const {data} = await axios.get('api/users/profile', config)
+        const {data} = await axios.get('/api/users/profile', config)
 
         dispatch({
             type: USER_PROFILE_SUCCESS,
@@ -142,7 +149,7 @@ export const update = (name, password, email) => async (dispatch, getState) =>{
             }
         }
 
-        const {data} = await axios.put('api/users/profile', {
+        const {data} = await axios.put('/api/users/profile', {
             name, email, password
         },config)
 
@@ -169,6 +176,42 @@ export const update = (name, password, email) => async (dispatch, getState) =>{
         })
     }
 }
+
+
+
+export const userList = () => async (dispatch, getState) =>{
+    try{
+        dispatch({type: USER_LIST_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const {data} = await axios.get('/api/users/', config)
+
+        dispatch({
+            type: USER_LIST_SUCCESS,
+            payload: data
+        })
+
+
+    }catch (e) {
+        dispatch({
+            type: USER_LIST_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
 
 
 

@@ -13,6 +13,7 @@ import ShippingScreen from "./screens/ShippingScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderDetailsScreen from "./screens/OrderDetailsScreen";
+import UserListScreen from "./screens/UserListScreen";
 
 const App = () => {
   return (
@@ -20,16 +21,26 @@ const App = () => {
       <Header/>
       <main>
           <Container>
+
+               {/*public routes*/}
               <Route path='/' component={HomeScreen} exact/>
               <Route path='/product/:id' component={ProductScreen} exact/>
               <Route path='/login' component={LoginScreen} exact/>
+              <Route path='/register' component={SignUpScreen} exact/>
+              <Route path='/cart/:id?' component={CartScreen}/>
+
+               {/*user routes*/}
+              <Route path='/orders/:id?' component={OrderDetailsScreen}/>
               <Route path='/shipping' component={ShippingScreen} exact/>
               <Route path='/payment' component={PaymentScreen} exact/>
               <Route path='/placeorder' component={PlaceOrderScreen} exact/>
               <Route path='/profile' component={ProfileScreen} exact/>
-              <Route path='/register' component={SignUpScreen} exact/>
-              <Route path='/cart/:id?' component={CartScreen}/>
-              <Route path='/orders/:id?' component={OrderDetailsScreen}/>
+
+               {/*====== admin routes*/}
+              <Route path='/admin/users/list' component={UserListScreen}/>
+              <Route path='/admin/products/list' component={UserListScreen}/>
+              <Route path='/admin/orders/list' component={UserListScreen}/>
+
           </Container>
       </main>
       <Footer/>
