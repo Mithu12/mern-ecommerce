@@ -16,7 +16,14 @@ import {
     USER_LIST_SUCCESS,
     USER_LIST_REQUEST,
     USER_REMOVE_FAIL,
-    USER_REMOVE_REQUEST, USER_REMOVE_SUCCESS
+    USER_REMOVE_REQUEST,
+    USER_REMOVE_SUCCESS,
+    ADMIN_USER_PROFILE_RESET,
+    ADMIN_USER_PROFILE_FAIL,
+    ADMIN_USER_PROFILE_SUCCESS,
+    ADMIN_USER_PROFILE_REQUEST,
+    ADMIN_USER_PROFILE_UPDATE_REQUEST,
+    ADMIN_USER_PROFILE_UPDATE_SUCCESS, ADMIN_USER_PROFILE_UPDATE_FAIL
 
 } from './userConstants'
 
@@ -111,6 +118,35 @@ export const userListReducer = (state={users:[]}, action) => {
         case USER_LIST_RESET:
             return {
                 users:[]
+            }
+        default:
+            return state
+    }
+}
+
+
+export const userDetailsReducerAdmin = (state={}, action) => {
+    switch (action.type) {
+        case ADMIN_USER_PROFILE_REQUEST:
+        case ADMIN_USER_PROFILE_UPDATE_REQUEST:
+            return {
+                loading: true
+            }
+        case ADMIN_USER_PROFILE_SUCCESS:
+        case ADMIN_USER_PROFILE_UPDATE_SUCCESS:
+            return {
+                loading: false,
+                user: action.payload,
+            }
+        case ADMIN_USER_PROFILE_FAIL:
+        case ADMIN_USER_PROFILE_UPDATE_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+        case ADMIN_USER_PROFILE_RESET:
+            return {
+                details:{}
             }
         default:
             return state

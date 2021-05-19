@@ -16,7 +16,15 @@ import {
     USER_LIST_FAIL,
     USER_LIST_SUCCESS,
     USER_LIST_REQUEST,
-    USER_LIST_RESET, USER_REMOVE_SUCCESS, USER_REMOVE_FAIL, USER_REMOVE_REQUEST
+    USER_LIST_RESET,
+    USER_REMOVE_SUCCESS,
+    USER_REMOVE_FAIL,
+    USER_REMOVE_REQUEST,
+    ADMIN_USER_PROFILE_REQUEST,
+    ADMIN_USER_PROFILE_SUCCESS,
+    ADMIN_USER_PROFILE_FAIL,
+    ADMIN_USER_PROFILE_UPDATE_REQUEST,
+    ADMIN_USER_PROFILE_UPDATE_SUCCESS, ADMIN_USER_PROFILE_UPDATE_FAIL
 
 } from './userConstants'
 import axios from "axios";
@@ -235,6 +243,72 @@ export const userRemove = (id) => async (dispatch, getState) =>{
     }catch (e) {
         dispatch({
             type: USER_REMOVE_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
+export const getUserDetails = (id) => async (dispatch, getState) =>{
+    try{
+        dispatch({type: ADMIN_USER_PROFILE_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const {data} = await axios.get(`/api/users/details/${id}`, config)
+
+        dispatch({
+            type: ADMIN_USER_PROFILE_SUCCESS,
+            payload: data
+        })
+
+
+
+    }catch (e) {
+        dispatch({
+            type: ADMIN_USER_PROFILE_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
+export const updateUserDetails = (id, user) => async (dispatch, getState) =>{
+    try{
+        dispatch({type: ADMIN_USER_PROFILE_UPDATE_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const {data} = await axios.put(`/api/users/details/${id}`, user, config)
+
+        dispatch({
+            type: ADMIN_USER_PROFILE_UPDATE_SUCCESS,
+            payload: data
+        })
+
+
+
+    }catch (e) {
+        dispatch({
+            type: ADMIN_USER_PROFILE_UPDATE_FAIL,
             payload: e.response && e.response.data.message
                 ? e.response.data.message
                 : e.message
