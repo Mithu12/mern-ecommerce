@@ -16,7 +16,7 @@ import {
     USER_LIST_FAIL,
     USER_LIST_SUCCESS,
     USER_LIST_REQUEST,
-    USER_LIST_RESET
+    USER_LIST_RESET, USER_REMOVE_SUCCESS, USER_REMOVE_FAIL, USER_REMOVE_REQUEST
 
 } from './userConstants'
 import axios from "axios";
@@ -203,6 +203,38 @@ export const userList = () => async (dispatch, getState) =>{
     }catch (e) {
         dispatch({
             type: USER_LIST_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+export const userRemove = (id) => async (dispatch, getState) =>{
+    try{
+        dispatch({type: USER_REMOVE_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        await axios.delete(`/api/users/remove/${id}`, config)
+
+        dispatch({
+            type: USER_REMOVE_SUCCESS
+        })
+        dispatch(userList())
+
+
+
+    }catch (e) {
+        dispatch({
+            type: USER_REMOVE_FAIL,
             payload: e.response && e.response.data.message
                 ? e.response.data.message
                 : e.message
