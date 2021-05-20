@@ -1,7 +1,5 @@
-
 import Product from "../models/productModel.js";
 import asyncHandler from "express-async-handler";
-
 
 
 // @desc    fetch all products
@@ -23,10 +21,91 @@ export const getSingleProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
     if (product)
         res.json(product)
-    else{
+    else {
         res.status(404)
         throw new Error('Product not found')
     }
 })
+
+
+// @desc    Creat product
+// @route   GET /api/products/create
+// @access  Private/Admin
+
+
+export const creatProduct = asyncHandler(async (req, res) => {
+
+    const user = req.user._id
+
+    const product = new Product({...(req.body), user})
+    if (product){
+        await product.save()
+        res.json(product)
+    }
+    else {
+        res.status(404)
+        throw new Error('Product not found')
+    }
+})
+
+
+
+
+// @desc    Creat product
+// @route   GET /api/products/update/:id
+// @access  Private/Admin
+
+
+export const updateProduct = asyncHandler(async (req, res) => {
+
+    const {
+        name,
+        price,
+        image,
+        brand,
+        category,
+        stock,
+        numReviews,
+        description
+    } = req.body
+
+    const product = await Product.findById(req.params.id)
+    if (product) {
+        product.name =  name ||  product.name
+        product.price =  price ||  product.price
+        product.image =  image ||  product.image
+        product.brand =  brand ||  product.brand
+        product.category =  category ||  product.category
+        product.stock =  stock ||  product.stock
+        product.numReviews =  numReviews ||  product.numReviews
+        product.description =  description ||  product.description
+
+        await product.save()
+        res.json({updateSuccess: true})
+    }
+    else {
+        res.status(404)
+        throw new Error('Product not found')
+    }
+})
+
+
+// @desc    Delete product
+// @route   GET /api/products/delete/:id
+// @access  Private/Admin
+
+export const deleteProduct = asyncHandler(async (req, res) => {
+
+    const product = await Product.findById(req.params.id)
+
+    if (product) {
+        await product.remove()
+        res.json({deleteSuccess: true})
+    } else {
+        res.status(404)
+        throw new Error('Product not found')
+    }
+})
+
 
 
