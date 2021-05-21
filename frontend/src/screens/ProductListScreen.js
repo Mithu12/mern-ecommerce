@@ -36,7 +36,7 @@ const ProductListScreen = ({history}) => {
     const {userInfo} = useSelector(state => state.user)
 
     const productList = useSelector(state => state.productList)
-    const {loading, error, products, removed, created} = productList
+    const {loading, error, products, removed, created, updated} = productList
 
     useEffect(() => {
         if (!userInfo.isAdmin)
@@ -90,6 +90,7 @@ const ProductListScreen = ({history}) => {
             {message && <Message variant="success" flash={setMessage}>{message}</Message>}
             {removed && <Message variant="success" flash={resetHandler}>Successfully Removed</Message>}
             {created && <Message variant="success" flash={resetHandler}>Successfully Added new product</Message>}
+            {updated && <Message variant="success" flash={resetHandler}>Successfully updated product</Message>}
             {error && <Message variant="danger">{error}</Message>}
 
             {loading ? (

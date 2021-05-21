@@ -8,7 +8,12 @@ import {
     PRODUCT_DETAILS_FAIL,
     PRODUCT_DELETE_REQUEST,
     PRODUCT_DELETE_SUCCESS,
-    PRODUCT_DELETE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_FAIL
+    PRODUCT_DELETE_FAIL,
+    PRODUCT_CREATE_REQUEST,
+    PRODUCT_CREATE_SUCCESS,
+    PRODUCT_CREATE_FAIL,
+    PRODUCT_UPDATE_FAIL,
+    PRODUCT_UPDATE_SUCCESS, PRODUCT_UPDATE_REQUEST
 } from './productConstants'
 
 export const productListReducer = (state={products:[]}, action) =>{
@@ -39,16 +44,22 @@ export const productListReducer = (state={products:[]}, action) =>{
                 ...state,
                 removed: true
             }
+        case PRODUCT_UPDATE_SUCCESS:   //update success
+            return {
+                ...state,
+                updated: true
+            }
         case PRODUCT_LIST_RESET:      // reset
             return {
                 ...state,
                 removed: false,
-                created: false
+                created: false,
+                updated: false
             }
         case PRODUCT_LIST_FAIL:
         case PRODUCT_CREATE_FAIL:
         case PRODUCT_DELETE_FAIL:
-            console.log(state)
+        case PRODUCT_UPDATE_FAIL:
             return {
                 loading: false,
                 error: action.payload
