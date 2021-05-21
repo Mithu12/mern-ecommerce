@@ -68,7 +68,7 @@ const ProductListScreen = ({history}) => {
     const deleteHandler = async () => {
         handleClose()
         await dispatch(deleteProduct(id))
-        dispatch(listProducts())
+        // dispatch(listProducts())
     }
 
     const resetHandler = (none) => {
@@ -102,6 +102,7 @@ const ProductListScreen = ({history}) => {
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>image</th>
                             <th>Price</th>
                             <th>Category</th>
                             <th>Brand</th>
@@ -146,6 +147,7 @@ const ProductListScreen = ({history}) => {
                             <tr key={product._id}>
                                 <td>{product._id}</td>
                                 <td>{product.name}</td>
+                                <td><img src={product.image} width={'100px'} alt="..."/></td>
                                 <td>$ {product.price}</td>
                                 <td>{product.category}</td>
                                 <td>{product.brand}</td>

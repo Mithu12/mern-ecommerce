@@ -36,15 +36,16 @@ export const getSingleProduct = asyncHandler(async (req, res) => {
 export const createProduct = asyncHandler(async (req, res) => {
 
     const user = req.user._id
+    const image = req.file ? '/images/'+req.file.filename : '/images/demo.jpg'
 
-    const product = new Product({...(req.body), user})
+    const product = new Product({...(req.body), image, user})
     if (product){
         await product.save()
         res.json(product)
     }
     else {
         res.status(404)
-        throw new Error('Product not found')
+        throw new Error('Product not added')
     }
 })
 
@@ -61,7 +62,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
     const {
         name,
         price,
-        image,
         brand,
         category,
         stock,
@@ -73,15 +73,15 @@ export const updateProduct = asyncHandler(async (req, res) => {
     if (product) {
         product.name =  name ||  product.name
         product.price =  price ||  product.price
-        product.image =  image ||  product.image
+        product.image = req.file ? '/images/'+req.file.filename : product.image
         product.brand =  brand ||  product.brand
         product.category =  category ||  product.category
         product.stock =  stock ||  product.stock
         product.numReviews =  numReviews ||  product.numReviews
         product.description =  description ||  product.description
 
-        await product.save()
-        res.json({updateSuccess: true})
+        const updatedProduct = await product.save()
+        res.json(updatedProduct)
     }
     else {
         res.status(404)

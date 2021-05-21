@@ -19,7 +19,6 @@ import {
 export const productListReducer = (state={products:[]}, action) =>{
     switch (action.type) {
         case PRODUCT_LIST_REQUEST:    // get list req
-        case PRODUCT_CREATE_REQUEST:    // Add product req
             return {
                 ...state,
                 loading: true
@@ -31,22 +30,21 @@ export const productListReducer = (state={products:[]}, action) =>{
                 products: action.payload
             }
         case PRODUCT_CREATE_SUCCESS:   // Add product success
-            console.log(state.products)
             return {
                 products: [
-                    ...(state.products),
-                    action.payload
+                    action.payload,
+                    ...(state.products)
                 ],
                 created: true
             }
         case PRODUCT_DELETE_SUCCESS:   //delete success
             return {
-                ...state,
+                products: action.payload,
                 removed: true
             }
         case PRODUCT_UPDATE_SUCCESS:   //update success
             return {
-                ...state,
+                products: action.payload,
                 updated: true
             }
         case PRODUCT_LIST_RESET:      // reset

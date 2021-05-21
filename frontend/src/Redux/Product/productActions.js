@@ -16,15 +16,15 @@ import {
 } from './productConstants'
 import axios from "axios";
 
-export const listProducts = () => async (dispatch) =>{
+export const listProducts = () => async (dispatch) => {
     try {
         dispatch({type: PRODUCT_LIST_REQUEST})
-        const { data } = await axios.get('/api/products')
+        const {data} = await axios.get('/api/products')
         dispatch({
             type: PRODUCT_LIST_SUCCESS,
             payload: data
         })
-    }catch (e) {
+    } catch (e) {
         dispatch({
             type: PRODUCT_LIST_FAIL,
             payload: e.response && e.response.data.message
@@ -34,15 +34,15 @@ export const listProducts = () => async (dispatch) =>{
     }
 }
 
-export const getProductDetails = (id) => async (dispatch) =>{
+export const getProductDetails = (id) => async (dispatch) => {
     try {
         dispatch({type: PRODUCT_DETAILS_REQUEST})
-        const { data } = await axios.get(`/api/products/${id}`)
+        const {data} = await axios.get(`/api/products/${id}`)
         dispatch({
             type: PRODUCT_DETAILS_SUCCESS,
             payload: data
         })
-    }catch (e) {
+    } catch (e) {
         dispatch({
             type: PRODUCT_DETAILS_FAIL,
             payload: e.response && e.response.data.message
@@ -52,11 +52,12 @@ export const getProductDetails = (id) => async (dispatch) =>{
     }
 }
 
-export const deleteProduct = (id) => async (dispatch, getState) =>{
+export const deleteProduct = (id) => async (dispatch, getState) => {
     try {
         dispatch({type: PRODUCT_DELETE_REQUEST})
 
         const {user: {userInfo}} = getState()
+        const {productList: {products}} = getState()
 
         const config = {
             headers: {
@@ -64,11 +65,14 @@ export const deleteProduct = (id) => async (dispatch, getState) =>{
             }
         }
 
+        const newProducts = products.filter(product => product._id !== id)
+
         await axios.delete(`/api/products/delete/${id}`, config)
         dispatch({
-            type: PRODUCT_DELETE_SUCCESS
+            type: PRODUCT_DELETE_SUCCESS,
+            payload: newProducts
         })
-    }catch (e) {
+    } catch (e) {
         dispatch({
             type: PRODUCT_DELETE_FAIL,
             payload: e.response && e.response.data.message
@@ -78,11 +82,9 @@ export const deleteProduct = (id) => async (dispatch, getState) =>{
     }
 }
 
-export const createProduct = (product) => async (dispatch, getState) =>{
+export const createProduct = (product) => async (dispatch, getState) => {
     try {
         dispatch({type: PRODUCT_CREATE_REQUEST})
-
-
         const {user: {userInfo}} = getState()
 
         const config = {
@@ -92,12 +94,12 @@ export const createProduct = (product) => async (dispatch, getState) =>{
         }
 
 
-        const { data } = await axios.post(`/api/products/create`, product, config)
+        const {data} = await axios.post(`/api/products/create`, product, config)
         dispatch({
             type: PRODUCT_CREATE_SUCCESS,
             payload: data
         })
-    }catch (e) {
+    } catch (e) {
         dispatch({
             type: PRODUCT_CREATE_FAIL,
             payload: e.response && e.response.data.message
@@ -107,12 +109,13 @@ export const createProduct = (product) => async (dispatch, getState) =>{
     }
 }
 
-export const updateProduct = (id,product) => async (dispatch, getState) =>{
+export const updateProduct = (id, product) => async (dispatch, getState) => {
     try {
         dispatch({type: PRODUCT_UPDATE_REQUEST})
 
 
         const {user: {userInfo}} = getState()
+        const {productList: {products}} = getState()
 
         const config = {
             headers: {
@@ -120,13 +123,15 @@ export const updateProduct = (id,product) => async (dispatch, getState) =>{
             }
         }
 
+        const {data} = await axios.post(`/api/products/update/${id}`, product, config)
 
-        const { data } = await axios.post(`/api/products/update/${id}`, product, config)
+        const newProducts = products.map( product => product._id === data._id ? data : product)
+
         dispatch({
             type: PRODUCT_UPDATE_SUCCESS,
-            payload: data
+            payload: newProducts
         })
-    }catch (e) {
+    } catch (e) {
         dispatch({
             type: PRODUCT_UPDATE_FAIL,
             payload: e.response && e.response.data.message

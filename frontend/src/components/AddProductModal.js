@@ -10,11 +10,11 @@ const AddProductModal = ({setNewProduct, update, id}) => {
     const [show, setShow] = useState(true);
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState({});
     const [brand, setBrand] = useState('');
     const [category, setCategory] = useState('');
     const [stock, setStock] = useState('');
-    const [numReviews, setNumReviews] = useState(0);
+    const [numReviews, setNumReviews] = useState('0');
     const [description, setDescription] = useState('');
 
     const {product} = useSelector(state => state.productDetails)
@@ -33,11 +33,9 @@ const AddProductModal = ({setNewProduct, update, id}) => {
     }, [dispatch]);
 
     useEffect(() => {
-        if (update && product)
-        {
+        if (update && product) {
             setName(product.name)
             setPrice(product.price)
-            setImage(product.image)
             setBrand(product.brand)
             setCategory(product.category)
             setStock(product.stock)
@@ -48,38 +46,42 @@ const AddProductModal = ({setNewProduct, update, id}) => {
     }, [product]);
 
 
-
     const addHandler = async () => {
 
-        await dispatch(createProduct({
-            name,
-            price,
-            image,
-            brand,
-            category,
-            stock,
-            numReviews,
-            description
-        }))
+        const productForm = new FormData()
+
+        productForm.append('name', name)
+        productForm.append('price', price)
+        productForm.append('image', image)
+        productForm.append('brand', brand)
+        productForm.append('category', category)
+        productForm.append('stock', stock)
+        productForm.append('numReviews', numReviews)
+        productForm.append('description', description)
+
+
+        await dispatch(createProduct(productForm))
         setShow(false)
         setNewProduct(false)
     };
 
     const updateHandler = async () => {
 
-        await dispatch(updateProduct(id,{
-            name,
-            price,
-            image,
-            brand,
-            category,
-            stock,
-            numReviews,
-            description
-        }))
+        const productForm = new FormData()
+
+        productForm.append('name', name)
+        productForm.append('price', price)
+        if (image)
+            productForm.append('image', image)
+        productForm.append('brand', brand)
+        productForm.append('category', category)
+        productForm.append('stock', stock)
+        productForm.append('numReviews', numReviews)
+        productForm.append('description', description)
+
+        await dispatch(updateProduct(id, productForm))
         setShow(false)
         setNewProduct(false)
-        dispatch(listProducts())
     };
 
     return (
@@ -102,7 +104,7 @@ const AddProductModal = ({setNewProduct, update, id}) => {
                             type="text"
                             placeholder="name"
                             value={name}
-                            onChange={(e)=>setName(e.target.value)}
+                            onChange={(e) => setName(e.target.value)}
                         />
                     </Form.Group>
 
@@ -112,19 +114,17 @@ const AddProductModal = ({setNewProduct, update, id}) => {
                             type="number"
                             placeholder="price"
                             value={price}
-                            onChange={(e)=>setPrice(e.target.value)}
+                            onChange={(e) => setPrice(e.target.value)}
                         />
                     </Form.Group>
 
 
-
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>image</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="image"
-                            value={image}
-                            onChange={(e)=>setImage(e.target.value)}
+                        <input
+                            type='file'
+                            name='images'
+                            onChange={e => setImage(e.target.files[0])}
                         />
                     </Form.Group>
 
@@ -134,10 +134,9 @@ const AddProductModal = ({setNewProduct, update, id}) => {
                             type="text"
                             placeholder="brand"
                             value={brand}
-                            onChange={(e)=>setBrand(e.target.value)}
+                            onChange={(e) => setBrand(e.target.value)}
                         />
                     </Form.Group>
-
 
 
                     <Form.Group controlId="formBasicEmail">
@@ -146,7 +145,7 @@ const AddProductModal = ({setNewProduct, update, id}) => {
                             type="text"
                             placeholder="category"
                             value={category}
-                            onChange={(e)=>setCategory(e.target.value)}
+                            onChange={(e) => setCategory(e.target.value)}
                         />
                     </Form.Group>
 
@@ -156,19 +155,18 @@ const AddProductModal = ({setNewProduct, update, id}) => {
                             type="number"
                             placeholder="stock"
                             value={stock}
-                            onChange={(e)=>setStock(e.target.value)}
+                            onChange={(e) => setStock(e.target.value)}
                         />
                     </Form.Group>
-
 
 
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>numReviews</Form.Label>
                         <Form.Control
-                            type="number"
+                            type="text"
                             placeholder="numReviews"
                             value={numReviews}
-                            onChange={(e)=>setNumReviews(Number(e.target.value))}
+                            onChange={(e) => setNumReviews(e.target.value)}
                         />
                     </Form.Group>
 
@@ -178,7 +176,7 @@ const AddProductModal = ({setNewProduct, update, id}) => {
                             type="text"
                             placeholder="description"
                             value={description}
-                            onChange={(e)=>setDescription(e.target.value)}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
                     </Form.Group>
 
