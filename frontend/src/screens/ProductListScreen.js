@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import { LinkContainer } from "react-router-bootstrap";
+import {LinkContainer} from "react-router-bootstrap";
 import {Table, Button, Row, Col, Modal} from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import Paginate from "../components/Paginate";
@@ -11,7 +11,8 @@ import {
     deleteProduct,
     createProduct,
 } from "../Redux/Product/productActions";
-import { PRODUCT_LIST_RESET } from "../Redux/Product/productConstants";
+import {PRODUCT_LIST_RESET} from "../Redux/Product/productConstants";
+import AddProductModal from "../components/AddProductModal";
 
 const ProductListScreen = ({history}) => {
 
@@ -19,11 +20,14 @@ const ProductListScreen = ({history}) => {
     const [id, setId] = useState('');
     const [message, setMessage] = useState('');
 
+    const [newProduct, setNewProduct] = useState(false);
+    const [updateProduct, setUpdateProduct] = useState(false);
+
     const handleClose = () => {
         setId('')
         setShow(false)
     };
-    const handleShow = (id, email) => {
+    const handleShow = (id) => {
         setId(id)
         setShow(true)
     };
@@ -32,10 +36,10 @@ const ProductListScreen = ({history}) => {
     const {userInfo} = useSelector(state => state.user)
 
     const productList = useSelector(state => state.productList)
-    const {loading, error, products, removed} = productList
+    const {loading, error, products, removed, created} = productList
 
     useEffect(() => {
-        if(!userInfo.isAdmin)
+        if (!userInfo.isAdmin)
             history.push('/login')
     }, [dispatch]);
 
@@ -46,9 +50,17 @@ const ProductListScreen = ({history}) => {
 
 
     const createProductHandler = async () => {
-        setMessage('create')
-        console.log('create')
+        setUpdateProduct(false)
+        setNewProduct(true)
     }
+
+
+    const updateProductHandler = async (id) => {
+        setId(id)
+        setUpdateProduct(true)
+        setNewProduct(true)
+    }
+
     const confirmHandler = async (id) => {
         handleShow()
         setId(id)
@@ -60,7 +72,7 @@ const ProductListScreen = ({history}) => {
     }
 
     const resetHandler = (none) => {
-        dispatch({type: PRODUCT_LIST_RESET })
+        dispatch({type: PRODUCT_LIST_RESET})
     }
 
     return (
@@ -77,6 +89,7 @@ const ProductListScreen = ({history}) => {
             </Row>
             {message && <Message variant="success" flash={setMessage}>{message}</Message>}
             {removed && <Message variant="success" flash={resetHandler}>Successfully Removed</Message>}
+            {created && <Message variant="success" flash={resetHandler}>Successfully Added new product</Message>}
             {error && <Message variant="danger">{error}</Message>}
 
             {loading ? (
@@ -95,7 +108,18 @@ const ProductListScreen = ({history}) => {
                         </tr>
                         </thead>
                         <tbody>
+{/*// ==== product add/update modal*/}
+                        {
+                            newProduct && <AddProductModal
+                                id={id}
+                                update={updateProduct}
+                                setNewProduct={setNewProduct}
+                            />
+                        }
+
+
                         <Modal show={show} onHide={handleClose}>
+
                             <Modal.Header closeButton>
 
                                 <Modal.Title> <span style={{
@@ -112,7 +136,10 @@ const ProductListScreen = ({history}) => {
                                     Yes
                                 </Button>
                             </Modal.Footer>
+
                         </Modal>
+
+
                         {products &&
                         products.map((product) => (
                             <tr key={product._id}>
@@ -122,11 +149,10 @@ const ProductListScreen = ({history}) => {
                                 <td>{product.category}</td>
                                 <td>{product.brand}</td>
                                 <td>
-                                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                                        <Button variant="light" className="btn-sm">
-                                            <i className="fas fa-edit"></i>
-                                        </Button>
-                                    </LinkContainer>
+                                    <Button variant="light" className="btn-sm"
+                                            onClick={() => updateProductHandler(product._id)}>
+                                        <i className="fas fa-edit"></i>
+                                    </Button>
                                     <Button
                                         variant="danger"
                                         className="btn-sm"

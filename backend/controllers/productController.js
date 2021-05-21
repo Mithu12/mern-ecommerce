@@ -29,11 +29,11 @@ export const getSingleProduct = asyncHandler(async (req, res) => {
 
 
 // @desc    Creat product
-// @route   GET /api/products/create
+// @route   POST /api/products/create
 // @access  Private/Admin
 
 
-export const creatProduct = asyncHandler(async (req, res) => {
+export const createProduct = asyncHandler(async (req, res) => {
 
     const user = req.user._id
 
@@ -52,7 +52,7 @@ export const creatProduct = asyncHandler(async (req, res) => {
 
 
 // @desc    Creat product
-// @route   GET /api/products/update/:id
+// @route   POST /api/products/update/:id
 // @access  Private/Admin
 
 

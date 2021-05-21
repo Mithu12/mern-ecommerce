@@ -1,5 +1,5 @@
 import express from "express";
-import {getProducts, getSingleProduct, deleteProduct, creatProduct, updateProduct} from "../controllers/productController.js";
+import {getProducts, getSingleProduct, deleteProduct, createProduct, updateProduct} from "../controllers/productController.js";
 import {protect, admin} from "../middleware/authMiddleware.js";
 
 const router = express.Router()
@@ -13,7 +13,7 @@ router.route('/:id').get(getSingleProduct)
 // remove products
 router.route('/delete/:id').delete(protect, admin, deleteProduct)
 // add products
-router.route('/create').post(protect, admin, creatProduct)
+router.route('/create').post(protect, admin, createProduct)
 // update products
 router.route('/update/:id').post(protect, admin, updateProduct)
 
