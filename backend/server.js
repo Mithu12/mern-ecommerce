@@ -22,8 +22,13 @@ app.use('/api/products/', productRoutes)
 app.use('/api/users/', userRoutes)
 app.use('/api/orders/', orderRoutes)
 
-const __dirname = path.resolve()
-app.use('/uploads', express.static(path.join(__dirname)))
+
+app.use(express.static('backend/uploads'))
+// const dirname = path.resolve()
+// app.use('/uploads', express.static(path.join(dirname, '/uploads')))
+
+// const __dirname = path.resolve()
+// app.use('/uploads', express.static(path.join(__dirname)))
 
 app.use(notFound)
 app.use(errorHandler)
