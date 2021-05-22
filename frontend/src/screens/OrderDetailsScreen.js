@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {singleOrderDetails} from "../Redux/Order/orderActions";
+import {singleOrderDetails, updateDelivered} from "../Redux/Order/orderActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import {Button, Card, Col, Image, ListGroup, Row} from "react-bootstrap";
@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 const OrderDetailsScreen = ({match}) => {
     const dispatch = useDispatch()
     const {orderDetails, error, loading} = useSelector(state => state.singleOrder)
+    const {userInfo} = useSelector(state => state.user)
 
     if (!loading && !error)
         orderDetails.itemsPrice = orderDetails.orderItems.reduce(
@@ -23,6 +24,9 @@ const OrderDetailsScreen = ({match}) => {
         getSingleOrder()
     }, [dispatch]);
 
+    const deliveredHandler = () => {
+        dispatch(updateDelivered(match.params.id))
+    }
 
     return loading ? (
         <Loader/>
@@ -51,10 +55,13 @@ const OrderDetailsScreen = ({match}) => {
                             </p>
                             {orderDetails.isDelivered ? (
                                 <Message variant="success">
-                                    Delivered on {orderDetails.DeliveredAt}
+                                    Delivered on {orderDetails.deliveredAt}
                                 </Message>
                             ) : (
-                                <Message variant="danger">Not Delivered</Message>
+                                <>
+                                    <Message variant="danger">Not Delivered</Message>
+                                    {userInfo.isAdmin && <Button onClick={deliveredHandler}>Mark as delivered </Button>}
+                                </>
                             )}
                         </ListGroup.Item>
 

@@ -7,7 +7,6 @@ import asyncHandler from "express-async-handler";
 // @access  Private
 
 export const addOrder = asyncHandler(async (req, res) => {
-    console.log('yoyo')
     const {
         orderItems,
         shippingAddress,
@@ -100,4 +99,43 @@ export const paymentOrder = asyncHandler(async (req, res) => {
     }
 
 })
+
+
+
+// @desc    Get all orders
+// @route   GET /api/orders/admin/list
+// @access  Private/Admin
+
+export const getAdminOrderList = asyncHandler(async (req, res) => {
+
+    const orders = await Order.find({}).populate('user', 'id name')
+
+    res.json(orders)
+
+
+})
+
+
+
+// @desc    update order delivery status
+// @route   GET /api/orders/admin/update/:id
+// @access  Private/Admin
+
+export const orderDeliveredSet = asyncHandler(async (req, res) => {
+
+    const order = await Order.findById(req.params.id).populate('user', 'id name email')
+    // const {user} = order
+
+    if (order){
+        order.isDelivered = true
+        order.deliveredAt = Date.now()
+        await order.save()
+        // order.user = user
+        res.json(order)
+    } else {
+        res.status(404)
+        throw new Error('Order not found')
+    }
+})
+
 

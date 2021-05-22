@@ -9,7 +9,10 @@ import {
     ORDER_LIST_SUCCESS,
     ORDER_LIST_FAIL,
     SINGLE_ORDER_DETAILS_RESET,
-    ORDER_LIST_RESET
+    ORDER_LIST_RESET,
+    ADMIN_ORDER_LIST_REQUEST,
+    ADMIN_ORDER_LIST_SUCCESS,
+    ADMIN_ORDER_LIST_FAIL, ADMIN_ORDER_UPDATE_REQUEST, ADMIN_ORDER_UPDATE_SUCCESS, ADMIN_ORDER_UPDATE_FAIL,
 } from "./orderConstants";
 
 export const orderPlaceReducer = (state, action) => {
@@ -46,13 +49,16 @@ export const orderDetailsReducer = (state = {
 }, action) => {
     switch (action.type) {
         case SINGLE_ORDER_DETAILS_REQUEST:
+        case ADMIN_ORDER_UPDATE_REQUEST:  // ======= update delivery status request
             return {loading: true}
         case SINGLE_ORDER_DETAILS_SUCCESS:
+        case ADMIN_ORDER_UPDATE_SUCCESS:  // ======= update delivery status success
             return {
                 loading: false,
                 orderDetails: action.payload
             }
         case SINGLE_ORDER_DETAILS_FAIL:
+        case ADMIN_ORDER_UPDATE_FAIL:     // ======= update delivery status fail
             return {
                 loading: false,
                 error: action.payload
@@ -78,19 +84,24 @@ export const orderDetailsReducer = (state = {
 export const orderListReducer = (state = {orders: []}, action) => {
     switch (action.type) {
         case ORDER_LIST_REQUEST:
+        case ADMIN_ORDER_LIST_REQUEST:
             return {loading: true}
         case ORDER_LIST_SUCCESS:
+        case ADMIN_ORDER_LIST_SUCCESS:
             return {
                 loading: false,
                 orders: action.payload
             }
         case ORDER_LIST_FAIL:
+        case ADMIN_ORDER_LIST_FAIL:
             return {
                 loading: false,
                 error: action.payload
             }
         case ORDER_LIST_RESET:
-            return {}
+            return {
+                orders: []
+            }
         default:
             return {
                 ...state

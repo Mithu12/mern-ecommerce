@@ -4,10 +4,17 @@ import {
     PLACE_ORDER_FAIL,
     SINGLE_ORDER_DETAILS_FAIL,
     SINGLE_ORDER_DETAILS_REQUEST,
-    SINGLE_ORDER_DETAILS_SUCCESS, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL,
+    SINGLE_ORDER_DETAILS_SUCCESS,
+    ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
     ORDER_LIST_REQUEST,
     ORDER_LIST_SUCCESS,
-    ORDER_LIST_FAIL
+    ORDER_LIST_FAIL,
+    ADMIN_ORDER_LIST_REQUEST,
+    ADMIN_ORDER_LIST_SUCCESS,
+    ADMIN_ORDER_LIST_FAIL,
+    ADMIN_ORDER_UPDATE_REQUEST, ADMIN_ORDER_UPDATE_SUCCESS, ADMIN_ORDER_UPDATE_FAIL
 } from "./orderConstants";
 
 import axios from "axios";
@@ -104,6 +111,76 @@ export const orderList= () => async (dispatch, getState) => {
     } catch (e) {
         dispatch({
             type: ORDER_LIST_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
+
+
+export const adminOrderList = () => async (dispatch, getState) => {
+    try {
+        dispatch({type: ADMIN_ORDER_LIST_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+
+        const {data} = await axios.get('/api/orders/admin/list',  config)
+
+        dispatch({
+            type: ADMIN_ORDER_LIST_SUCCESS,
+            payload: data
+        })
+
+    } catch (e) {
+        dispatch({
+            type: ADMIN_ORDER_LIST_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
+
+
+export const updateDelivered = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({type: ADMIN_ORDER_UPDATE_REQUEST})
+
+        const {user: {userInfo}} = getState()
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+
+        const {data} = await axios.get('/api/orders/admin/update/'+id,  config)
+
+        dispatch({
+            type: ADMIN_ORDER_UPDATE_SUCCESS,
+            payload: data
+        })
+
+    } catch (e) {
+        dispatch({
+            type: ADMIN_ORDER_UPDATE_FAIL,
             payload: e.response && e.response.data.message
                 ? e.response.data.message
                 : e.message
