@@ -16,7 +16,12 @@ import {
     PRODUCT_UPDATE_FAIL,
     PRODUCT_CREATE_REVIEW_REQUEST,
     PRODUCT_CREATE_REVIEW_SUCCESS,
-    PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_SEARCH_REQUEST, PRODUCT_SEARCH_SUCCESS, PRODUCT_SEARCH_FAIL
+    PRODUCT_CREATE_REVIEW_FAIL,
+    PRODUCT_SEARCH_REQUEST,
+    PRODUCT_SEARCH_SUCCESS,
+    PRODUCT_SEARCH_FAIL,
+    TOP_PRODUCT_REQUEST,
+    TOP_PRODUCT_SUCCESS, TOP_PRODUCT_FAIL
 } from './productConstants'
 import axios from "axios";
 
@@ -50,6 +55,26 @@ export const searchProducts = (name) => async (dispatch) => {
     } catch (e) {
         dispatch({
             type: PRODUCT_SEARCH_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+
+export const topProducts = () => async (dispatch) => {
+    try {
+        dispatch({type: TOP_PRODUCT_REQUEST})
+        const {data} = await axios.get('/api/products/top/')
+        dispatch({
+            type: TOP_PRODUCT_SUCCESS,
+            payload: data
+        })
+    } catch (e) {
+        dispatch({
+            type: TOP_PRODUCT_FAIL,
             payload: e.response && e.response.data.message
                 ? e.response.data.message
                 : e.message
