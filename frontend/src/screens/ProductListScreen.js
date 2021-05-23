@@ -14,7 +14,9 @@ import {
 import {PRODUCT_LIST_RESET} from "../Redux/Product/productConstants";
 import AddProductModal from "../components/AddProductModal";
 
-const ProductListScreen = ({history}) => {
+const ProductListScreen = ({history, location}) => {
+
+    const page = location.search && location.search.split('=')[1]
 
     const [show, setShow] = useState(false);
     const [id, setId] = useState('');
@@ -36,7 +38,7 @@ const ProductListScreen = ({history}) => {
     const {userInfo} = useSelector(state => state.user)
 
     const productList = useSelector(state => state.productList)
-    const {loading, error, products, removed, created, updated} = productList
+    const {loading, error, products, removed, created, updated, pages, currentPage} = productList
 
     useEffect(() => {
         if (!userInfo.isAdmin)
@@ -45,9 +47,12 @@ const ProductListScreen = ({history}) => {
 
     useEffect(() => {
         if (products && products.length === 0)
-            dispatch(listProducts())
-    }, [products]);
+            dispatch(listProducts(page))
+    }, [products, page]);
 
+    useEffect(()=>{
+        dispatch(listProducts(page))
+    }, [page])
 
     const createProductHandler = async () => {
         setUpdateProduct(false)
@@ -168,7 +173,7 @@ const ProductListScreen = ({history}) => {
                         ))}
                         </tbody>
                     </Table>
-                    {/*<Paginate pages={pages} page={page} isAdmin={true}/>*/}
+                    <Paginate pages={pages} page={currentPage} path={'/admin/products/list'}/>
                 </>
             )}
         </>

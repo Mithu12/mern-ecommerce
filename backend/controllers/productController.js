@@ -8,8 +8,17 @@ import {json} from "express";
 // @access  Public
 
 export const getProducts = asyncHandler(async (req, res) => {
+    const pageSize = 2
+    const currentPage = Number(req.query.currentPage) || 1
+    const count = await Product.find({}).countDocuments()
     const products = await Product.find({})
-    res.json(products)
+        .limit(pageSize)
+        .skip(pageSize * (currentPage-1))
+    res.json({
+        products,
+        currentPage,
+        pages: Math.ceil(count/pageSize)
+    })
 })
 
 
@@ -30,7 +39,7 @@ export const searchProducts = asyncHandler(async (req, res) => {
 })
 
 
-// @desc    fetch single products
+// @desc    fetch single product
 // @route   GET /api/products/:id
 // @access  Public
 
