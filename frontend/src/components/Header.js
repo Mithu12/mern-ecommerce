@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {logout} from "../Redux/User/userActions";
 import {useHistory} from "react-router";
+import SearchBox from "./SearchBox";
 
 const Header = () => {
     const history = useHistory()
@@ -26,6 +27,9 @@ const Header = () => {
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
+
+                    <SearchBox/>
+
                     <Nav className="ml-auto">
                         <LinkContainer to="/cart">
                             <Nav.Link href><i className={'fa fa-shopping-cart'}/> cart</Nav.Link>

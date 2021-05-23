@@ -17,10 +17,14 @@ import {
     PRODUCT_UPDATE_REQUEST,
     PRODUCT_CREATE_REVIEW_REQUEST,
     PRODUCT_CREATE_REVIEW_SUCCESS,
-    PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_RESET
+    PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_RESET,
+    PRODUCT_SEARCH_REQUEST,
+    PRODUCT_SEARCH_SUCCESS,
+    PRODUCT_SEARCH_FAIL,
+    PRODUCT_SEARCH_RESET
 } from './productConstants'
 
-export const productListReducer = (state={products:[]}, action) =>{
+export const productListReducer = (state = {products: []}, action) => {
     switch (action.type) {
         case PRODUCT_LIST_REQUEST:    // get list req
             return {
@@ -71,15 +75,16 @@ export const productListReducer = (state={products:[]}, action) =>{
     }
 }
 
-export const productDetailsReducer = (state={product:{reviews:[]}}, action) =>{
+
+export const productDetailsReducer = (state = {product: {reviews: []}}, action) => {
     switch (action.type) {
         case PRODUCT_DETAILS_REQUEST:
-            return {loading: true }
+            return {loading: true}
         case PRODUCT_CREATE_REVIEW_REQUEST:
-        return {
-            ...state,
-            reviewLoading: true
-        }
+            return {
+                ...state,
+                reviewLoading: true
+            }
         case PRODUCT_DETAILS_SUCCESS:
             return {
                 ...state,
@@ -117,12 +122,39 @@ export const productDetailsReducer = (state={product:{reviews:[]}}, action) =>{
             return {
                 ...state,
 
-                reviewSuccess : false,
-                reviewMessage : '',
+                reviewSuccess: false,
+                reviewMessage: '',
                 reviewError: false
             }
 
         default:
             return state
     }
+}
+
+
+export const productSearchReducer = (state = {products: []}, action) => {
+    switch (action.type) {
+        case PRODUCT_SEARCH_REQUEST:
+            return {
+                loading: true
+            }
+        case PRODUCT_SEARCH_SUCCESS:
+            return {
+                loading: false,
+                suggestions: action.payload
+            }
+        case PRODUCT_SEARCH_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+        case PRODUCT_SEARCH_RESET:
+            return {
+
+            }
+        default:
+            return state
+    }
+
 }

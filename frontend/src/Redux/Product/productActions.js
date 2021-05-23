@@ -16,7 +16,7 @@ import {
     PRODUCT_UPDATE_FAIL,
     PRODUCT_CREATE_REVIEW_REQUEST,
     PRODUCT_CREATE_REVIEW_SUCCESS,
-    PRODUCT_CREATE_REVIEW_FAIL
+    PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_SEARCH_REQUEST, PRODUCT_SEARCH_SUCCESS, PRODUCT_SEARCH_FAIL
 } from './productConstants'
 import axios from "axios";
 
@@ -31,6 +31,25 @@ export const listProducts = () => async (dispatch) => {
     } catch (e) {
         dispatch({
             type: PRODUCT_LIST_FAIL,
+            payload: e.response && e.response.data.message
+                ? e.response.data.message
+                : e.message
+        })
+    }
+}
+
+
+export const searchProducts = (name) => async (dispatch) => {
+    try {
+        dispatch({type: PRODUCT_SEARCH_REQUEST})
+        const {data} = await axios.get('/api/products/search/'+name)
+        dispatch({
+            type: PRODUCT_SEARCH_SUCCESS,
+            payload: data
+        })
+    } catch (e) {
+        dispatch({
+            type: PRODUCT_SEARCH_FAIL,
             payload: e.response && e.response.data.message
                 ? e.response.data.message
                 : e.message
