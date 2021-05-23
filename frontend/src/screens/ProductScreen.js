@@ -8,6 +8,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import {addToCart} from "../Redux/Cart/cartActions";
 import ProductReviews from "../components/ProductReviews";
+import Meta from "../components/Meta";
 
 
 const ProductScreen = ({match}) => {
@@ -35,6 +36,7 @@ const ProductScreen = ({match}) => {
 
     return (
         <div>
+
             <Link className={'btn btn-light my-3'} to="/">Go back</Link>
             {viewMessage && <Message variant={'success'}>Product Added Successfully</Message>}
             {
@@ -42,6 +44,7 @@ const ProductScreen = ({match}) => {
                 loading ? <Loader/>
                     : error ? <Message variant={'danger'}/> :
                     product && <>
+                    <Meta title={product.name}/>
                         <Row>
                             <Col md={6}>
                                 <Image src={product.image} alt={product.name} fluid/>

@@ -7,6 +7,7 @@ import Message from "../components/Message";
 import {listProducts} from "../Redux/Product/productActions";
 import Paginate from "../components/Paginate";
 import TopProductCarousel from "../components/TopProductCarousel";
+import Meta from "../components/Meta";
 
 const HomeScreen = ({location}) => {
     const dispatch = useDispatch()
@@ -22,6 +23,7 @@ const HomeScreen = ({location}) => {
 
     return (
         <div>
+            <Meta/>
             <TopProductCarousel/>
             <h1>Latest Products</h1>
             {
