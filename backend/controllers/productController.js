@@ -8,17 +8,30 @@ import {json} from "express";
 // @access  Public
 
 export const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = 2
+    const pageSize = 4
     const currentPage = Number(req.query.currentPage) || 1
     const count = await Product.find({}).countDocuments()
     const products = await Product.find({})
         .limit(pageSize)
-        .skip(pageSize * (currentPage-1))
+        .skip(pageSize * (currentPage - 1))
     res.json({
         products,
         currentPage,
-        pages: Math.ceil(count/pageSize)
+        pages: Math.ceil(count / pageSize)
     })
+})
+
+
+// @desc    fetch top products
+// @route   GET /api/products/top
+// @access  Public
+
+export const getTopProducts = asyncHandler(async (req, res) => {
+
+    const products = await Product.find({})
+        .sort({rating: -1})
+        .limit(3)
+    res.json(products)
 })
 
 
@@ -28,13 +41,13 @@ export const getProducts = asyncHandler(async (req, res) => {
 
 export const searchProducts = asyncHandler(async (req, res) => {
     const queryOptions = req.params.name ? {
-        name:{
+        name: {
             $regex: req.params.name,
             $options: 'i'
         }
     } : {}
 
-    const products = await Product.find({...queryOptions},'name')
+    const products = await Product.find({...queryOptions}, 'name')
     res.json(products)
 })
 
@@ -63,20 +76,17 @@ export const getSingleProduct = asyncHandler(async (req, res) => {
 export const createProduct = asyncHandler(async (req, res) => {
 
     const user = req.user._id
-    const image = req.file ? '/images/'+req.file.filename : '/images/demo.jpg'
+    const image = req.file ? '/images/' + req.file.filename : '/images/demo.jpg'
 
     const product = new Product({...(req.body), image, user})
-    if (product){
+    if (product) {
         await product.save()
         res.json(product)
-    }
-    else {
+    } else {
         res.status(404)
         throw new Error('Product not added')
     }
 })
-
-
 
 
 // @desc    Update product
@@ -98,19 +108,18 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
     const product = await Product.findById(req.params.id)
     if (product) {
-        product.name =  name ||  product.name
-        product.price =  price ||  product.price
-        product.image = req.file ? '/images/'+req.file.filename : product.image
-        product.brand =  brand ||  product.brand
-        product.category =  category ||  product.category
-        product.stock =  stock ||  product.stock
-        product.numReviews =  numReviews ||  product.numReviews
-        product.description =  description ||  product.description
+        product.name = name || product.name
+        product.price = price || product.price
+        product.image = req.file ? '/images/' + req.file.filename : product.image
+        product.brand = brand || product.brand
+        product.category = category || product.category
+        product.stock = stock || product.stock
+        product.numReviews = numReviews || product.numReviews
+        product.description = description || product.description
 
         const updatedProduct = await product.save()
         res.json(updatedProduct)
-    }
-    else {
+    } else {
         res.status(404)
         throw new Error('Product not found')
     }
@@ -135,8 +144,6 @@ export const deleteProduct = asyncHandler(async (req, res) => {
 })
 
 
-
-
 // @desc    Rate/review product
 // @route   POST /api/products/review/:id
 // @access  Private
@@ -152,12 +159,10 @@ export const reviewProduct = asyncHandler(async (req, res) => {
     if (product) {
         const alreadyReviewed = product.reviews.find(r => r.user.toString() === req.user._id.toString())
         // const alreadyReviewed = false
-        if (alreadyReviewed)
-        {
+        if (alreadyReviewed) {
             res.status(400)
             throw new Error('Product Already reviewed')
-        }
-        else {
+        } else {
 
 
             const review = {
@@ -173,8 +178,7 @@ export const reviewProduct = asyncHandler(async (req, res) => {
             await product.save()
             res.status(201).json({message: 'review added successfully', review})
         }
-    }
-    else {
+    } else {
         res.status(404)
         throw new Error('Product not found')
     }
