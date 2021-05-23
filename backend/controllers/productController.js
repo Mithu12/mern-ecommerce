@@ -13,6 +13,23 @@ export const getProducts = asyncHandler(async (req, res) => {
 })
 
 
+// @desc    search products
+// @route   GET /api/products/search/:name
+// @access  Public
+
+export const searchProducts = asyncHandler(async (req, res) => {
+    const queryOptions = req.params.name ? {
+        name:{
+            $regex: req.params.name,
+            $options: 'i'
+        }
+    } : {}
+
+    const products = await Product.find({...queryOptions},'name')
+    res.json(products)
+})
+
+
 // @desc    fetch single products
 // @route   GET /api/products/:id
 // @access  Public
