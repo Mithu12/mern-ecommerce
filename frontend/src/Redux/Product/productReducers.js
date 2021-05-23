@@ -13,7 +13,11 @@ import {
     PRODUCT_CREATE_SUCCESS,
     PRODUCT_CREATE_FAIL,
     PRODUCT_UPDATE_FAIL,
-    PRODUCT_UPDATE_SUCCESS, PRODUCT_UPDATE_REQUEST
+    PRODUCT_UPDATE_SUCCESS,
+    PRODUCT_UPDATE_REQUEST,
+    PRODUCT_CREATE_REVIEW_REQUEST,
+    PRODUCT_CREATE_REVIEW_SUCCESS,
+    PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_RESET
 } from './productConstants'
 
 export const productListReducer = (state={products:[]}, action) =>{
@@ -71,16 +75,53 @@ export const productDetailsReducer = (state={product:{reviews:[]}}, action) =>{
     switch (action.type) {
         case PRODUCT_DETAILS_REQUEST:
             return {loading: true }
+        case PRODUCT_CREATE_REVIEW_REQUEST:
+        return {
+            ...state,
+            reviewLoading: true
+        }
         case PRODUCT_DETAILS_SUCCESS:
             return {
+                ...state,
                 loading: false,
                 product: action.payload
+            }
+        case PRODUCT_CREATE_REVIEW_SUCCESS:   // ================ creating a new review success
+            return {
+                ...state,
+                reviewLoading: false,
+                reviewSuccess: true,
+                reviewMessage: action.payload.message,
+                product: {
+                    ...(state.product),
+                    reviews: [
+                        ...(state.product.reviews),
+                        action.payload.review,
+                    ]
+                }
             }
         case PRODUCT_DETAILS_FAIL:
             return {
                 loading: false,
                 error: action.payload
             }
+        case PRODUCT_CREATE_REVIEW_FAIL:    // ================ creating a new review fail
+            return {
+                ...state,
+                reviewLoading: false,
+                loading: false,
+                reviewError: action.payload
+            }
+
+        case PRODUCT_CREATE_REVIEW_RESET:    // ================ resetting a new review state
+            return {
+                ...state,
+
+                reviewSuccess : false,
+                reviewMessage : '',
+                reviewError: false
+            }
+
         default:
             return state
     }

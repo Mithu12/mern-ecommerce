@@ -147,7 +147,7 @@ const ProductListScreen = ({history}) => {
                             <tr key={product._id}>
                                 <td>{product._id}</td>
                                 <td>{product.name}</td>
-                                <td><img src={`http://localhost:3000/${product.image}`} width={'100px'} alt="..."/></td>
+                                <td><img src={`http://localhost:3000${product.image}`} width={'100px'} alt="..."/></td>
                                 <td>$ {product.price}</td>
                                 <td>{product.category}</td>
                                 <td>{product.brand}</td>
