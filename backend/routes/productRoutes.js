@@ -1,5 +1,5 @@
 import express from "express";
-import {getProducts, getSingleProduct, deleteProduct, createProduct, updateProduct} from "../controllers/productController.js";
+import {getProducts, reviewProduct, getSingleProduct, deleteProduct, createProduct, updateProduct} from "../controllers/productController.js";
 import {protect, admin} from "../middleware/authMiddleware.js";
 import upload from "./uploadRoutes.js";
 
@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.route('/').get(getProducts)
 router.route('/:id').get(getSingleProduct)
+router.route('/review/:id').post(protect, reviewProduct)
 
 
 // ================================= Admin routes
